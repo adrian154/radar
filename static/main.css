@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+body, html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+
+    color: #2c2c2c;
+}
+
+#top {
+    background-color: black;
+    color: white;
+    padding: 1em 3em;
+}
+
+#date {
+    font-weight: 200;
+    font-size: 2.5em;
+    margin-top: 0;
+    margin-bottom: 10pt;
+}
+
+#main-area {
+
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: row;
+    padding: 2em 3em;
+    gap: 0.5em;
+
+}
+
+.board h2 {
+    margin-top: 0;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: #414141;
+}
+
+.board {
+    flex-basis: 50%; 
+    border-radius: 5px;   
+}
+
+#tasks, #events {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, auto));
+    gap: 0.5em;
+}
+
+.task {
+    padding: 1em;
+    border-radius: 7px;
+    border: 1px solid rgba(75, 75, 75, 0.2);
+}
