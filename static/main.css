@@ -1,60 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-body, html {
-    height: 100%;
+:root {
+    --accent-color: #2664ff; 
 }
 
 body {
     font-family: 'Inter', sans-serif;
     margin: 0;
-    
-    display: flex;
-    flex-direction: column;
-
-    box-sizing: border-box;
-
+    padding: 1.5em;
     color: #2c2c2c;
 }
 
-#top {
-    background-color: black;
-    color: white;
-    padding: 1em 3em;
-}
-
-#date {
-    font-weight: 200;
-    font-size: 2.5em;
-    margin-top: 0;
-    margin-bottom: 10pt;
-}
-
-#main-area {
-
-    flex-grow: 1;
-
-    display: flex;
-    flex-direction: row;
-    padding: 2em 3em;
-    gap: 0.5em;
-
-}
-
-.board h2 {
-    margin-top: 0;
-    font-size: 0.9em;
-    font-weight: 500;
-    color: #414141;
-}
-
-.board {
-    flex-basis: 50%; 
-    border-radius: 5px;   
-}
-
-#tasks, #events {
+#tasks-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, auto));
+    grid-template-columns: repeat(auto-fill, minmax(300px, auto));
     gap: 0.5em;
 }
 
@@ -62,4 +21,93 @@ body {
     padding: 1em;
     border-radius: 7px;
     border: 1px solid rgba(75, 75, 75, 0.2);
+}
+
+.task .title {
+    font-weight: bold;
+    margin-top: 0;
+}
+
+.tag {
+    border-radius: 100px;
+    font-variant-caps: small-caps;
+    padding: 0 6.5px 2.5px;
+    display: inline-block;
+}
+
+.tag.complete { color: #ffffff; background-color: #48b555; }
+.tag.in-progress { color: #000000; background-color: #ffdd00; }
+.tag.not-started,
+.tag.normal { color: #000000; background-color: #e3e3e3;}
+.tag.important { color: #ffffff; background-color: #ff0000; }
+
+#edit-task {
+    border: none;
+    border-radius: 1em;
+    width: 30em;
+    padding: 1em;
+    padding-top: 1.5em;
+}
+
+#edit-task #task-title {
+    border: none;
+    font-family: inherit;
+    font-size: 2em;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#edit-task #task-desc {
+    border: none;
+    outline: none;
+    font-size: 1em;
+    font-family: inherit;
+    margin-top: 1em;
+    width: 100%;
+    resize: none;
+    box-sizing: border-box;
+    height: 6em;
+}
+
+#edit-task button {
+    float: right;
+    border: none;
+    background: none;
+    border-radius: 100em;
+    color: #ffffff;
+    background-color: var(--accent-color);
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 0.5em 1em;
+    cursor: pointer;
+}
+
+#edit-task input[type='radio'] {
+    display: none;
+}
+
+input:not(:checked) + label.tag {
+    color: #000000;
+    background: none;
+}
+
+#new-task-button {
+    position: fixed;
+    bottom: 1.5em;
+    right: 1.5em;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 5em;
+    border: none;
+    font-size: 0.8em;
+    color: #ffffff;
+    background-color: var(--accent-color);
+    font-size: 16pt;
+    padding: 0;
+    padding-bottom: 3px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: 0.2s;
+    cursor: pointer;
 }

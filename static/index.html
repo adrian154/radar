@@ -1,51 +1,51 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf8">
-        <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="main.css">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Radar</title>
+        <link rel="stylesheet" href="main.css">
     </head>
     <body>
-        <div id="top">
-            <p style="margin-bottom: 0.5em; font-size: 10pt;"><i>Welcome back. Here is your radar as of</i></p>
-            <h1 id="date"></h1>
+        
+        <!-- pre-made tags that are cloned for each task element -->
+        <div id="tag-templates" style="display: none">
+            <span class="tag important">important</span>
+            <span class="tag in-progress">in progress</span>
+            <span class="tag complete">complete</span>
+            <span class="tag not-started">not started</span>
         </div>
-        <div id="main-area">
-            <div class="board">
-                <h2>TASKS</h2>
-                <div id="tasks">
-                    <div class="task">
-                        <span>take out trash</span>
-                    </div>
 
-                </div>
-            </div>  
-            <div class="board">
-                <h2>EVENTS</h2>
-                <div id="events">
-                    <div class="task">
-                        <span>take out trash</span>
-                    </div>
-                    <div class="task">
-                        <span>take out trash</span>
-                    </div>
-                    <div class="task">
-                        <span>take out trash</span>
-                    </div>
-                    <div class="task">
-                        <span>take out trash</span>
-                    </div>
-                    <div class="task">
-                        <span>take out trash</span>
-                    </div>
-                    <div class="task">
-                        <span>take out trash</span>
-                    </div>
-
-                </div>
-            </div>
+        <div id="tasks-grid">
+            <!--<div class="task">
+                <p class="title">Do some thing title goes here</p>
+                <p class="desc">These are the details necessary to complete the task</p>
+                <span class="tag important">important</span>
+                <span class="tag in-progress">in progress</span>
+                <span class="tag complete">complete</span>
+                <span class="tag not-started">not started</span>
+            </div>-->
         </div>
+        <dialog id="edit-task" closedby="any">
+            <form id="edit-task-form">
+                <input type="text" id="task-title" placeholder="Task title..." required>
+                <textarea id="task-desc" placeholder="Description (optional)..."></textarea>
+                <p>
+                    <span>Priority:</span>
+                    <input type="radio" id="task-normal" name="priority" checked> <label for="task-normal" class="tag normal">normal</label>
+                    <input type="radio" id="task-important" name="priority"> <label for="task-important" class="tag important">important</label>
+                </p>
+                <p>
+                    <span>Status:</span>
+                    <input type="radio" id="task-not-started" name="status" checked> <label for="task-not-started" class="tag not-started">not started</label>
+                    <input type="radio" id="task-in-progress" name="status"> <label for="task-in-progress" class="tag in-progress">in progress</label>
+                    <input type="radio" id="task-complete" name="status"> <label for="task-complete" class="tag complete">complete</label>
+                </p>
+                <label for="task-date">Due date:</label> <input type="date" id="task-date">
+                <button type="submit">Save</button>
+            </form>
+        </dialog>
+        <button id="new-task-button">&#65291;</button>
         <script src="radar.js"></script>
     </body>
 </html>
