@@ -11,6 +11,12 @@ const TASK_PRIORITY = {
     HIGH: "high"
 };
 
+const priorityToInt = {
+    [TASK_PRIORITY.LOW]: 0,
+    [TASK_PRIORITY.NORMAL]: 1,
+    [TASK_PRIORITY.HIGH]: 2
+};
+
 // elements
 const editor = {
     dialog: document.getElementById("edit-task"),
@@ -44,9 +50,9 @@ const loadItem = item => {
     editorItemId = item.id;
     editor.title.value = item.title;
     editor.desc.value = item.desc;
-    editor.priority.high.checked == item.priority == TASK_PRIORITY.HIGH;
-    editor.priority.normal.checked == item.priority == TASK_PRIORITY.NORMAL;
-    editor.priority.low.checked == item.priority == TASK_PRIORITY.LOW;
+    editor.priority.high.checked = item.priority == TASK_PRIORITY.HIGH;
+    editor.priority.normal.checked = item.priority == TASK_PRIORITY.NORMAL;
+    editor.priority.low.checked = item.priority == TASK_PRIORITY.LOW;
     editor.status.notStarted.checked = item.status == TASK_STATUS.NOT_STARTED;
     editor.status.inProgress.checked = item.status == TASK_STATUS.IN_PROGRESS;
     editor.status.complete.checked = item.status == TASK_STATUS.COMPLETE;
@@ -74,7 +80,16 @@ const fetchItems = async () => {
     }
 
     const data = await resp.json();
-    for(const item of data) {
+    const sorted = data.sort((a, b) => {
+
+        // compare priority
+        if(a.priority != b.priority) {
+            return priorityToInt[b.priority] - priorityToInt[a.priority];
+        } 
+
+    });
+
+    for(const item of sorted) {
 
         const div = document.createElement("div");
         div.classList.add("task");
