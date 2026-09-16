@@ -5,13 +5,22 @@ const TASK_STATUS = {
     COMPLETE: "complete"
 };
 
+const TASK_PRIORITY = {
+    LOW: "low",
+    NORMAL: "normal",
+    HIGH: "high"
+};
+
 // elements
 const editor = {
     dialog: document.getElementById("edit-task"),
     title: document.getElementById("task-title"),
     desc: document.getElementById("task-desc"),
-    priorityNormal: document.getElementById("task-normal"),
-    priorityImportant: document.getElementById("task-important"),
+    priority: {
+        low: document.getElementById("task-low"),
+        normal: document.getElementById("task-normal"),
+        high: document.getElementById("task-high")
+    },
     status: {
         notStarted: document.getElementById("task-not-started"),
         inProgress: document.getElementById("task-in-progress"),
@@ -20,7 +29,9 @@ const editor = {
     date: document.getElementById("task-date")
 };
 const tagTemplates = {
-    important: document.querySelector("#tag-templates .important"),
+    low: document.querySelector("#tag-templates .low"),
+    normal: document.querySelector("#tag-templates .normal"),
+    high: document.querySelector("#tag-templates .high"),
     inProgress: document.querySelector("#tag-templates .in-progress"),
     complete: document.querySelector("#tag-templates .complete"),
     notStarted: document.querySelector("#tag-templates .not-started")
@@ -33,8 +44,9 @@ const loadItem = item => {
     editorItemId = item.id;
     editor.title.value = item.title;
     editor.desc.value = item.desc;
-    editor.priorityImportant.checked = item.important;
-    editor.priorityNormal.checked = !item.important;
+    editor.priority.high.checked == item.priority == TASK_PRIORITY.HIGH;
+    editor.priority.normal.checked == item.priority == TASK_PRIORITY.NORMAL;
+    editor.priority.low.checked == item.priority == TASK_PRIORITY.LOW;
     editor.status.notStarted.checked = item.status == TASK_STATUS.NOT_STARTED;
     editor.status.inProgress.checked = item.status == TASK_STATUS.IN_PROGRESS;
     editor.status.complete.checked = item.status == TASK_STATUS.COMPLETE;
@@ -45,8 +57,9 @@ const clearEditor = () => {
     editorItemId = null;
     editor.title.value = "";
     editor.desc.value = "";
-    editor.priorityImportant.checked = false;
-    editor.priorityNormal.checked = true;
+    editor.priority.high.checked = false;
+    editor.priority.normal.checked = false;
+    editor.priority.low.checked = false;
     editor.status.notStarted.checked = true;
     editor.status.inProgress.checked = false;
     editor.status.inProgress.checked = false;
@@ -63,8 +76,6 @@ const fetchItems = async () => {
     const data = await resp.json();
     for(const item of data) {
 
-        item.important = JSON.parse(item.important);
-
         const div = document.createElement("div");
         div.classList.add("task");
         tasksGrid.append(div);
@@ -79,8 +90,12 @@ const fetchItems = async () => {
         desc.textContent = item.desc;
         div.append(desc);
 
-        if(item.important) {
-            div.append(tagTemplates.important.cloneNode(true), " ");
+        if(item.priority == TASK_PRIORITY.HIGH) {
+            div.append(tagTemplates.high.cloneNode(true), " ");
+        } else if(item.priority == TASK_PRIORITY.NORMAL) {
+            div.append(tagTemplates.normal.cloneNode(true), " ");
+        } else if(item.priority == TASK_PRIORITY.LOW) {
+            div.append(tagTemplates.low.cloneNode(true), " ");
         }
 
         if(item.status == TASK_STATUS.NOT_STARTED) {
@@ -101,9 +116,13 @@ document.getElementById("edit-task-form").addEventListener("submit", async event
 
     event.preventDefault();
 
-    const status = editor.status.notStarted.checked ? "not_started" :
-                   editor.status.inProgress.checked ? "in_progress" :
-                   "complete";
+    const status = editor.status.notStarted.checked ? TASK_STATUS.NOT_STARTED :
+                   editor.status.inProgress.checked ? TASK_STATUS.IN_PROGRESS :
+                   TASK_STATUS.COMPLETE;
+
+    const priority = editor.priority.high.checked ? TASK_PRIORITY.HIGH :
+                     editor.priority.normal.checked ? TASK_PRIORITY.NORMAL :
+                     TASK_PRIORITY.LOW;
 
     const resp = await fetch("/items", {
         method: "POST",
@@ -116,7 +135,7 @@ document.getElementById("edit-task-form").addEventListener("submit", async event
             desc: editor.desc.value,
             status: status,
             dueDate: Number(editor.date.valueAsDate),
-            important: editor.priorityImportant.checked
+            priority: priority
         })
     });
 

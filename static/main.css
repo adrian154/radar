@@ -37,9 +37,11 @@ body {
 
 .tag.complete { color: #ffffff; background-color: #48b555; }
 .tag.in-progress { color: #000000; background-color: #ffdd00; }
-.tag.not-started,
-.tag.normal { color: #000000; background-color: #e3e3e3;}
-.tag.important { color: #ffffff; background-color: #ff0000; }
+.tag.not-started { color: #000000; background-color: #e3e3e3;}
+
+.tag.high { color: #ffffff; background-color: #ff0000; }
+.tag.normal { color: #ffffff; background-color: #005dff; }
+.tag.low { color: #ffffff; background-color: #959595; }
 
 #edit-task {
     border: none;

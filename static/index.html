@@ -10,21 +10,25 @@
         
         <!-- pre-made tags that are cloned for each task element -->
         <div id="tag-templates" style="display: none">
-            <span class="tag important">important</span>
+            <span class="tag high">high</span>
+            <span class="tag normal">normal</span>
+            <span class="tag low">low</span>
             <span class="tag in-progress">in progress</span>
             <span class="tag complete">complete</span>
             <span class="tag not-started">not started</span>
         </div>
 
         <div id="tasks-grid">
-            <!--<div class="task">
+            <div class="task">
                 <p class="title">Do some thing title goes here</p>
                 <p class="desc">These are the details necessary to complete the task</p>
-                <span class="tag important">important</span>
+                <span class="tag high">high</span>
+                <span class="tag normal">normal</span>
+                <span class="tag low">low</span>
                 <span class="tag in-progress">in progress</span>
                 <span class="tag complete">complete</span>
                 <span class="tag not-started">not started</span>
-            </div>-->
+            </div>
         </div>
         <dialog id="edit-task" closedby="any">
             <form id="edit-task-form">
@@ -32,8 +36,9 @@
                 <textarea id="task-desc" placeholder="Description (optional)..."></textarea>
                 <p>
                     <span>Priority:</span>
+                    <input type="radio" id="task-low" name="priority" checked> <label for="task-normal" class="tag low">low</label>
                     <input type="radio" id="task-normal" name="priority" checked> <label for="task-normal" class="tag normal">normal</label>
-                    <input type="radio" id="task-important" name="priority"> <label for="task-important" class="tag important">important</label>
+                    <input type="radio" id="task-high" name="priority"> <label for="task-important" class="tag high">high</label>
                 </p>
                 <p>
                     <span>Status:</span>
