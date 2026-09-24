@@ -42,6 +42,9 @@ const tagTemplates = {
     complete: document.querySelector("#tag-templates .complete"),
     notStarted: document.querySelector("#tag-templates .not-started")
 };
+const sortAndFilter = {
+    showComplete: document.getElementById("show-complete")
+};
 const tasksGrid = document.getElementById("tasks-grid");
 
 let editorItemId = null;
@@ -56,6 +59,11 @@ const loadItem = item => {
     editor.status.notStarted.checked = item.status == TASK_STATUS.NOT_STARTED;
     editor.status.inProgress.checked = item.status == TASK_STATUS.IN_PROGRESS;
     editor.status.complete.checked = item.status == TASK_STATUS.COMPLETE;
+    if(item.dueDate) {
+        editor.date.valueAsDate = new Date(item.dueDate);
+    } else {
+        editor.date.value = "";
+    }
     editor.dialog.showModal();
 };
 
@@ -65,12 +73,15 @@ const clearEditor = () => {
     editor.desc.value = "";
     editor.priority.high.checked = false;
     editor.priority.normal.checked = false;
-    editor.priority.low.checked = false;
+    editor.priority.low.checked = true;
     editor.status.notStarted.checked = true;
     editor.status.inProgress.checked = false;
     editor.status.inProgress.checked = false;
     editor.date.valueAsDate = null;
 };
+
+// store list of items and associated elements
+const tasks = [];
 
 const fetchItems = async () => {
 
@@ -122,10 +133,27 @@ const fetchItems = async () => {
         }
 
         div.addEventListener("click", () => loadItem(item));
+        tasks.push({task: item, element: div});
 
     }
 
+    // apply default sort options
+    updateGrid();
+
 };
+
+// apply sort and filter settings
+const updateGrid = () => {
+    for(const {task, element} of tasks) {
+        if(sortAndFilter.showComplete.checked) {
+            element.style.display = "";
+        } else  {
+            element.style.display = task.status == TASK_STATUS.COMPLETE ? "none" : "";
+        }
+    }
+};
+
+sortAndFilter.showComplete.addEventListener("input", updateGrid);
 
 document.getElementById("edit-task-form").addEventListener("submit", async event => {
 
@@ -165,6 +193,13 @@ document.getElementById("edit-task-form").addEventListener("submit", async event
 document.getElementById("new-task-button").addEventListener("click", () => {
     clearEditor();
     editor.dialog.showModal();
+});
+
+// prevent newlines in task title
+editor.title.addEventListener("keydown", event => {
+    if(event.key == "Enter") {
+        event.preventDefault();
+    }
 });
 
 fetchItems();

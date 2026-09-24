@@ -18,6 +18,10 @@
             <span class="tag not-started">not started</span>
         </div>
 
+        <div id="sort-options">
+            <input type="checkbox" id="show-complete"> <label for="show-complete">show completed tasks</label>
+        </div>
+
         <div id="tasks-grid">
             <!--<div class="task">
                 <p class="title">Do some thing title goes here</p>
@@ -32,8 +36,8 @@
         </div>
         <dialog id="edit-task" closedby="any">
             <form id="edit-task-form">
-                <input type="text" id="task-title" placeholder="Task title..." required>
-                <textarea id="task-desc" placeholder="Description (optional)..."></textarea>
+                <textarea id="task-title" placeholder="Task title..." required></textarea>
+                <textarea id="task-desc" placeholder="Description..."></textarea>
                 <p>
                     <span>Priority:</span>
                     <input type="radio" id="task-low" name="priority" checked> <label for="task-low" class="tag low">low</label>

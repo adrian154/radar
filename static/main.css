@@ -11,6 +11,10 @@ body {
     color: #2c2c2c;
 }
 
+#sort-options {
+    margin-bottom: 1em;
+}
+
 #tasks-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, auto));
@@ -26,6 +30,10 @@ body {
 .task .title {
     font-weight: bold;
     margin-top: 0;
+}
+
+.task .desc {
+    white-space: pre-wrap;
 }
 
 .tag {
@@ -53,11 +61,16 @@ body {
 
 #edit-task #task-title {
     border: none;
+    outline: none;
+    font-size: 1em;
     font-family: inherit;
     font-size: 2em;
     outline: none;
     width: 100%;
+    resize: none;
     box-sizing: border-box;
+    overflow: hidden;
+    field-sizing: content;
 }
 
 #edit-task #task-desc {
@@ -69,7 +82,7 @@ body {
     width: 100%;
     resize: none;
     box-sizing: border-box;
-    height: 6em;
+    height: 15em;
 }
 
 #edit-task button {
