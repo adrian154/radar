@@ -47,10 +47,10 @@ const sortAndFilter = {
 };
 const tasksGrid = document.getElementById("tasks-grid");
 
-let editorItemId = null;
+let selectedTask = null;
 
 const loadItem = item => {
-    editorItemId = item.id;
+    selectedTask = item;
     editor.title.value = item.title;
     editor.desc.value = item.desc;
     editor.priority.high.checked = item.priority == TASK_PRIORITY.HIGH;
@@ -68,7 +68,7 @@ const loadItem = item => {
 };
 
 const clearEditor = () => {
-    editorItemId = null;
+    selectedTask = null;
     editor.title.value = "";
     editor.desc.value = "";
     editor.priority.high.checked = false;
@@ -83,6 +83,42 @@ const clearEditor = () => {
 // store list of items and associated elements
 const tasks = [];
 
+const buildElement = item => {
+
+    const div = document.createElement("div");
+    div.classList.add("task");
+
+    const title = document.createElement("p");
+    title.classList.add("title");
+    title.textContent = item.title;
+    div.append(title);
+
+    const desc = document.createElement("p");
+    desc.classList.add("desc");
+    desc.textContent = item.desc;
+    div.append(desc);
+
+    if(item.priority == TASK_PRIORITY.HIGH) {
+        div.append(tagTemplates.high.cloneNode(true), " ");
+    } else if(item.priority == TASK_PRIORITY.NORMAL) {
+        div.append(tagTemplates.normal.cloneNode(true), " ");
+    } else if(item.priority == TASK_PRIORITY.LOW) {
+        div.append(tagTemplates.low.cloneNode(true), " ");
+    }
+
+    if(item.status == TASK_STATUS.NOT_STARTED) {
+        div.append(tagTemplates.notStarted.cloneNode(true), " ");
+    } else if(item.status == TASK_STATUS.IN_PROGRESS) {
+        div.append(tagTemplates.inProgress.cloneNode(true), " ");
+    } else if(item.status == TASK_STATUS.COMPLETE) {
+        div.append(tagTemplates.complete.cloneNode(true), " ");
+    }
+
+    div.addEventListener("click", () => loadItem(item));
+    return div;
+
+};
+
 const fetchItems = async () => {
 
     const resp = await fetch("/items");
@@ -91,50 +127,12 @@ const fetchItems = async () => {
     }
 
     const data = await resp.json();
-    const sorted = data.sort((a, b) => {
-
-        // compare priority
-        if(a.priority != b.priority) {
-            return priorityToInt[b.priority] - priorityToInt[a.priority];
-        } 
-
-    });
-
-    for(const item of sorted) {
-
-        const div = document.createElement("div");
-        div.classList.add("task");
-        tasksGrid.append(div);
-
-        const title = document.createElement("p");
-        title.classList.add("title");
-        title.textContent = item.title;
-        div.append(title);
-
-        const desc = document.createElement("p");
-        desc.classList.add("desc");
-        desc.textContent = item.desc;
-        div.append(desc);
-
-        if(item.priority == TASK_PRIORITY.HIGH) {
-            div.append(tagTemplates.high.cloneNode(true), " ");
-        } else if(item.priority == TASK_PRIORITY.NORMAL) {
-            div.append(tagTemplates.normal.cloneNode(true), " ");
-        } else if(item.priority == TASK_PRIORITY.LOW) {
-            div.append(tagTemplates.low.cloneNode(true), " ");
-        }
-
-        if(item.status == TASK_STATUS.NOT_STARTED) {
-            div.append(tagTemplates.notStarted.cloneNode(true), " ");
-        } else if(item.status == TASK_STATUS.IN_PROGRESS) {
-            div.append(tagTemplates.inProgress.cloneNode(true), " ");
-        } else if(item.status == TASK_STATUS.COMPLETE) {
-            div.append(tagTemplates.complete.cloneNode(true), " ");
-        }
-
-        div.addEventListener("click", () => loadItem(item));
-        tasks.push({task: item, element: div});
-
+ 
+    for(const task of data) {
+        const element = buildElement(task);
+        task.element = element;
+        tasksGrid.append(element);
+        tasks.push(task);
     }
 
     // apply default sort options
@@ -144,11 +142,27 @@ const fetchItems = async () => {
 
 // apply sort and filter settings
 const updateGrid = () => {
-    for(const {task, element} of tasks) {
+    
+    // sort tasks and apply order
+    const sorted = tasks.sort((a, b) => {
+
+        // compare priority
+        if(a.priority != b.priority) {
+            return priorityToInt[b.priority] - priorityToInt[a.priority];
+        } 
+
+    });
+
+    for(const i in sorted) {
+        sorted[i].element.style.order = i;
+    }
+
+    // update filters
+    for(const task of tasks) {
         if(sortAndFilter.showComplete.checked) {
-            element.style.display = "";
+            task.element.style.display = "";
         } else  {
-            element.style.display = task.status == TASK_STATUS.COMPLETE ? "none" : "";
+            task.element.style.display = task.status == TASK_STATUS.COMPLETE ? "none" : "";
         }
     }
 };
@@ -167,26 +181,41 @@ document.getElementById("edit-task-form").addEventListener("submit", async event
                      editor.priority.normal.checked ? TASK_PRIORITY.NORMAL :
                      TASK_PRIORITY.LOW;
 
+    const newTask = {
+        id: selectedTask?.id,
+        title: editor.title.value,
+        desc: editor.desc.value,
+        status: status,
+        dueDate: Number(editor.date.valueAsDate),
+        priority: priority
+    };
+
     const resp = await fetch("/items", {
         method: "POST",
         headers: {
             "content-type": "application/json"
         },
-        body: JSON.stringify({
-            id: editorItemId,
-            title: editor.title.value,
-            desc: editor.desc.value,
-            status: status,
-            dueDate: Number(editor.date.valueAsDate),
-            priority: priority
-        })
+        body: JSON.stringify(newTask)
     });
 
     if(!resp.ok) {
         alert("Failed to add task :(")
     }
 
-    location.reload();
+    // create grid entry
+    const element = buildElement(newTask);
+    newTask.element = element;
+    tasksGrid.append(element);
+
+    if(selectedTask) {
+        selectedTask.element.remove(); // if added already, delete the old element
+        Object.assign(selectedTask, newTask);
+    } else {
+        tasks.push(newTask); // otherwise add the task
+    }    
+
+    updateGrid();
+    editor.dialog.close();
 
 });
 
